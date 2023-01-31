@@ -32,8 +32,7 @@ if data:
     data = pd.read_csv(data)
     st.write("Data Loaded!")
     clf = run_classifier(data)
-    input_data = st.text_input("Enter sepal length, sepal width, petal 
-length, petal width separated by commas:")
+    input_data = st.text_input("Enter sepal length, sepal width, petal length, petal width separated by commas:")
     if input_data:
         input_data = [float(x) for x in input_data.split(",")]
         prediction = classify(clf, [input_data])
