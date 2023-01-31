@@ -1,31 +1,25 @@
 import streamlit as st
 import numpy as np
-import scipy.stats as stats
 import matplotlib.pyplot as plt
+from scipy.stats import beta
 
-st.set_page_color(background_color='black')
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
-st.title("Beta Distribution")
+α_beta = st.slider('α for Beta distribution', 0.1, 10.0, 2.0)
+β_beta = st.slider('β for Beta distribution', 0.1, 10.0, 2.0)
 
-a = st.slider("a", 0.01, 10.0)
-b = st.slider("b", 0.01, 10.0)
-
-x = np.linspace(stats.beta.ppf(0.01, a, b), stats.beta.ppf(0.99, a, b), 
-100)
-
-fig, ax = plt.subplots()
-ax.plot(x, stats.beta.pdf(x, a, b), 'k-', lw=5, alpha=0.6, label='beta 
-pdf')
-st.pyplot(fig)
-
-prob = st.slider("prob", 0.0, 1.0)
-
-x = np.linspace(stats.beta.ppf(0.01, a, b), stats.beta.ppf(prob, a, b), 
-100)
+x = np.linspace(0, 1, num=100)
+y = beta.pdf(x, α_beta, β_beta)
 
 fig, ax = plt.subplots()
-ax.fill_between(x, stats.beta.pdf(x, a, b), 0, color='#5fba7d', alpha=0.5)
-ax.plot(x, stats.beta.pdf(x, a, b), 'k-', lw=5, alpha=0.6, label='beta 
-pdf')
-st.pyplot(fig)
+ax.plot(x, y)
 
+lower_bound, upper_bound = st.beta_dist_interval()
+
+if lower_bound:
+lower_bound = float(lower_bound)
+upper_bound = float(upper_bound)
+ax.fill_between(x, 0, y, where=(x >= lower_bound) & (x <= upper_bound), 
+color='gray', alpha=0.5)
+
+st.pyplot(fig)
