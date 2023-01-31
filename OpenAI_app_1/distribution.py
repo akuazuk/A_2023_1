@@ -1,33 +1,37 @@
 import streamlit as st
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.stats import norm, beta
 
-st.title("Normal and Beta Distribution Plotting App")
+st.title("Normal and Beta Distribution Plotter")
 
-mu = st.sidebar.slider("Mean", -10, 10, 0)
-sigma = st.sidebar.slider("Standard Deviation", 0.1, 10.0, 1.0)
-a = st.sidebar.slider("a (Beta Distribution)", 0.1, 10.0, 1.0)
-b = st.sidebar.slider("b (Beta Distribution)", 0.1, 10.0, 1.0)
-prob = st.sidebar.slider("Probability (for Beta Distribution)", 0.0, 1.0, 
-0.5, step=0.01)
+# plot normal distribution
+mu = st.slider("Mean of Normal Distribution", 0.0, 10.0, 5.0)
+sigma = st.slider("Standard Deviation of Normal Distribution", 0.1, 5.0, 
+1.0)
+normal = norm(mu, sigma)
 
-x = np.linspace(-10, 10, num=100)
-normal = norm.pdf(x, mu, sigma)
-beta_dist = beta.pdf(x, a, b)
+# plot beta distribution
+a = st.slider("Alpha of Beta Distribution", 1.0, 10.0, 1.0)
+b = st.slider("Beta of Beta Distribution", 1.0, 10.0, 1.0)
+beta_dist = beta(a, b)
 
-beta_range = beta.ppf([prob, 1-prob], a, b)
+# plot the distributions
+x = np.linspace(mu-3*sigma, mu+3*sigma, 100)
+normal_pdf = normal.pdf(x)
 
-st.write("## Normal Distribution")
-st.line_chart(normal)
+x_beta = np.linspace(beta_dist.ppf(0.01), beta_dist.ppf(0.99), 100)
+beta_pdf = beta_dist.pdf(x_beta)
 
-st.write("## Beta Distribution")
-st.line_chart(beta_dist)
-st.write("Beta Distribution range for given probability: [%.2f, %.2f]" % 
-(beta_range[0], beta_range[1]))
+st.write("#### Normal Distribution")
+plt.plot(x, normal_pdf, label='pdf', color='blue')
+plt.fill_between(x, normal_pdf, 0, color='blue', alpha=0.3)
+plt.legend()
+st.pyplot()
 
-if st.button("Update Plot"):
-    beta_range = beta.ppf([prob, 1-prob], a, b)
-    st.write("Beta Distribution range for given probability: [%.2f, %.2f]" 
-% (beta_range[0], beta_range[1]))
+st.write("#### Beta Distribution")
+plt.plot(x_beta, beta_pdf, label='pdf', color='green')
+plt.fill_between(x_beta, beta_pdf, 0, color='green', alpha=0.3)
+plt.legend()
+st.pyplot()
 
