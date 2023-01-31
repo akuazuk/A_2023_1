@@ -1,41 +1,43 @@
 import streamlit as st
 import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn import tree
 
 st.write("""
-# Decision Tree Classifier
-This app is a simple example of using a decision tree classifier for a 
-binary classification task.
+# Decision Tree Classifier App
+This app predicts the class of iris flowers!
 """)
+
+st.set_page_config(page_title="Decision Tree Classifier", 
+page_icon=":guardsman:", layout="wide")
 
 def load_data():
     data = pd.read_csv("data.csv")
     return data
 
+def run_classifier(data):
+    clf = tree.DecisionTreeClassifier()
+    X = data.drop(["class"], axis=1)
+    Y = data["class"]
+    clf = clf.fit(X, Y)
+    return clf
+
 @st.cache
-def split_data(data):
-    X = data.drop("target", axis=1)
-    y = data["target"]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, 
-test_size=0.2, random_state=0)
-    return X_train, X_test, y_train, y_test
+def classify(clf, input_data):
+    prediction = clf.predict(input_data)
+    return prediction
 
-def run_classifier(X_train, X_test, y_train, y_test):
-    clf = DecisionTreeClassifier()
-    clf.fit(X_train, y_train)
-    y_pred = clf.predict(X_test)
-    acc = accuracy_score(y_test, y_pred)
-    return acc
-
-data = None
-if st.button("Load Data"):
-    data = load_data()
-    X_train, X_test, y_train, y_test = split_data(data)
-    acc = run_classifier(X_train, X_test, y_train, y_test)
-    st.write("Accuracy: ", acc)
-
-if data is not None:
-    st.dataframe(data)
+data = st.file_uploader("Upload your iris data (csv format)", 
+type=["csv"])
+if data:
+    data = pd.read_csv(data)
+    st.write("Data Loaded!")
+    clf = run_classifier(data)
+    input_data = st.text_input("Enter sepal length, sepal width, petal 
+length, petal width separated by commas:")
+    if input_data:
+        input_data = [float(x) for x in input_data.split(",")]
+        prediction = classify(clf, [input_data])
+        st.write("Class: ", prediction)
+else:
+    st.write("Please upload the data file")
 
