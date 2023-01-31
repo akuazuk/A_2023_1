@@ -1,6 +1,6 @@
+import matplotlib.pyplot as plt
 import streamlit as st
 import numpy as np
-import matplotlib.pyplot as plt
 import scipy.stats as stt
 
 st.title("## Beta Distribution Plotter")
