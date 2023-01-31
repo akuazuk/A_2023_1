@@ -3,25 +3,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import beta
 
-st.title("Beta Distribution Density Probability Plot")
+st.title("Beta Distribution Interactive Plot")
 
-a, b = st.slider("Shape parameters", 0.1, 5.0, (1.0, 3.0)), st.slider("Shape parameters", 0.1, 5.0, (1.0, 3.0))
+alpha_slider = st.slider("Alpha (α) Value", 0.1, 10.0, 1.0)
+beta_slider = st.slider("Beta (β) Value", 0.1, 10.0, 1.0)
 
+alpha, beta = alpha_slider, beta_slider
 x = np.linspace(0, 1, 100)
-y = beta.pdf(x, a, b)
+y = beta.pdf(x, alpha, beta)
 
-plt.plot(x, y, label='beta pdf')
+fig, ax = plt.subplots()
+ax.plot(x, y)
 
-st.plotly_chart(plt)
+st.pyplot()
 
-prob_range_start, prob_range_end = st.slider("Probability Range", 0.0, 1.0, (0.0, 1.0))
+prob_slider = st.slider("Probability", 0, 1.0, 0.5)
 
-prob_range = np.linspace(prob_range_start, prob_range_end, 100)
-prob_area = beta.cdf(prob_range_end, a, b) - beta.cdf(prob_range_start, a, b)
+prob = prob_slider
+lower_bound, upper_bound = beta.ppf([prob, 1 - prob], alpha, beta)
 
-st.write(f"The probability of the range [{prob_range_start}, {prob_range_end}] is: {prob_area:.3f}")
-
-plt.fill_between(prob_range, 0, beta.pdf(prob_range, a, b), alpha=0.5)
-
-st.plotly_chart(plt)
-
+st.markdown(f"Range of probabilities with {100 * prob:.0f}% confidence:")
+st.markdown(f"Lower bound: {lower_bound:.2f}")
+st.markdown(f"Upper bound: {upper_bound:.2f}")
