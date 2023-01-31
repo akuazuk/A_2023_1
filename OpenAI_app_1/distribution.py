@@ -1,35 +1,42 @@
 import streamlit as st
 import pandas as pd
-from sklearn import tree
-
-st.set_page_config(page_title="Decision Tree Classifier", page_icon=":guardsman:", layout="wide")
-
-st.write("""
-# Decision Tree Classifier App
-This app predicts the class of iris flowers!
-""")
-
-def run_classifier(data):
-    clf = tree.DecisionTreeClassifier()
-    X = data.drop(["class"], axis=1)
-    Y = data["class"]
-    clf = clf.fit(X, Y)
-    return clf
+import matplotlib.pyplot as plt
+from sklearn.tree import DecisionTreeClassifier
 
 @st.cache
-def classify(clf, input_data):
-    prediction = clf.predict(input_data)
-    return prediction
+def load_data(file_path):
+    data = pd.read_csv(file_path)
+    return data
 
-data = st.file_uploader("Upload your iris data (csv format)", type=["csv"])
-if data:
-    data = pd.read_csv(data)
-    st.write("Data Loaded!")
-    clf = run_classifier(data)
-    input_data = st.text_input("Enter sepal length, sepal width, petal length, petal width separated by commas:")
-    if input_data:
-        input_data = [float(x) for x in input_data.split(",")]
-        prediction = classify(clf, [input_data])
-        st.write("Class: ", prediction)
-else:
-    st.write("Please upload the data file")
+def main():
+    st.title("Machine Learning Model - Kyphosis Detection")
+    st.sidebar.title("Kyphosis Detection")
+
+    file_path = st.sidebar.file_uploader("Upload Kyphosis Data (CSV file)", type=["csv"])
+    if file_path is not None:
+        data = load_data(file_path)
+        st.dataframe(data.head())
+        st.write("Number of rows and columns:", data.shape)
+
+        X = data.drop("Kyphosis", axis=1)
+        y = data["Kyphosis"]
+
+        st.sidebar.subheader("Model Selection")
+        algorithm = st.sidebar.selectbox("Select Algorithm", ["Decision Tree"])
+
+        if algorithm == "Decision Tree":
+            clf = DecisionTreeClassifier()
+            clf.fit(X, y)
+            accuracy = clf.score(X, y)
+            st.write("Accuracy: ", accuracy)
+
+        st.subheader("Visualizing Data")
+        if st.checkbox("Show Scatter Plot with Class labels"):
+            plt.scatter(X["Age"], X["Number"], c=y, cmap="viridis")
+            plt.xlabel("Age")
+            plt.ylabel("Number")
+            st.pyplot()
+
+if __name__ == '__main__':
+    main()
+
