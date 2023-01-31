@@ -1,52 +1,31 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import norm, beta
+from scipy.stats import beta, norm
 
-st.title("Normal and Beta Distribution Plotter")
+st.set_page_config(page_title="Beta & Normal Distribution Plot", 
+page_icon=":chart_with_upwards_trend:", layout="wide")
 
-# plot normal distribution
-mu = st.slider("Mean of Normal Distribution", 0.0, 10.0, 5.0)
-sigma = st.slider("Standard Deviation of Normal Distribution", 0.1, 5.0, 
-1.0)
-normal = norm(mu, sigma)
+st.header("Beta & Normal Distribution Plot")
 
-# plot beta distribution
-a = st.slider("Alpha of Beta Distribution", 1.0, 10.0, 1.0)
-b = st.slider("Beta of Beta Distribution", 1.0, 10.0, 1.0)
-beta_dist = beta(a, b)
+# Create the sliders for Beta distribution
+alpha_slider = st.slider("Alpha (Shape 1)", 0.1, 10.0, 1.0, 0.1)
+beta_slider = st.slider("Beta (Shape 2)", 0.1, 10.0, 1.0, 0.1)
 
-while True:
-    # plot the distributions
-    x = np.linspace(mu-3*sigma, mu+3*sigma, 100)
-    normal_pdf = normal.pdf(x)
+# Plot the Beta distribution
+x = np.linspace(0, 1, 100)
+y = beta.pdf(x, alpha_slider, beta_slider)
+plt.plot(x, y)
 
-    x_beta = np.linspace(beta_dist.ppf(0.01), beta_dist.ppf(0.99), 100)
-    beta_pdf = beta_dist.pdf(x_beta)
+st.pyplot()
 
-    st.write("#### Normal Distribution")
-    plt.plot(x, normal_pdf, label='pdf', color='blue')
-    plt.fill_between(x, normal_pdf, 0, color='blue', alpha=0.3)
-    plt.legend()
-    st.pyplot()
+# Plot the normal distribution
+mean_slider = st.slider("Mean", -5.0, 5.0, 0.0, 0.1)
+std_slider = st.slider("Standard Deviation", 0.1, 5.0, 1.0, 0.1)
 
-    st.write("#### Beta Distribution")
-    plt.plot(x_beta, beta_pdf, label='pdf', color='green')
-    plt.fill_between(x_beta, beta_pdf, 0, color='green', alpha=0.3)
-    plt.legend()
-    st.pyplot()
+x = np.linspace(-5, 5, 100)
+y = norm.pdf(x, mean_slider, std_slider)
+plt.plot(x, y)
 
-    mu = st.slider("Mean of Normal Distribution", 0.0, 10.0, mu)
-    sigma = st.slider("Standard Deviation of Normal Distribution", 0.1, 
-5.0, sigma)
-    normal = norm(mu, sigma)
-
-    a = st.slider("Alpha of Beta Distribution", 1.0, 10.0, a)
-    b = st.slider("Beta of Beta Distribution", 1.0, 10.0, b)
-    beta_dist = beta(a, b)
-
-    if st.button("Re-plot"):
-        pass
-    else:
-        break
+st.pyplot()
 
