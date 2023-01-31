@@ -1,25 +1,41 @@
 import streamlit as st
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import beta
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
-st.set_option('deprecation.showPyplotGlobalUse', False)
+st.write("""
+# Decision Tree Classifier
+This app is a simple example of using a decision tree classifier for a 
+binary classification task.
+""")
 
-α_beta = st.slider('α for Beta distribution', 0.1, 10.0, 2.0)
-β_beta = st.slider('β for Beta distribution', 0.1, 10.0, 2.0)
+def load_data():
+    data = pd.read_csv("data.csv")
+    return data
 
-x = np.linspace(0, 1, num=100)
-y = beta.pdf(x, α_beta, β_beta)
+@st.cache
+def split_data(data):
+    X = data.drop("target", axis=1)
+    y = data["target"]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, 
+test_size=0.2, random_state=0)
+    return X_train, X_test, y_train, y_test
 
-fig, ax = plt.subplots()
-ax.plot(x, y)
+def run_classifier(X_train, X_test, y_train, y_test):
+    clf = DecisionTreeClassifier()
+    clf.fit(X_train, y_train)
+    y_pred = clf.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
+    return acc
 
-lower_bound, upper_bound = st.beta_dist_interval()
+data = None
+if st.button("Load Data"):
+    data = load_data()
+    X_train, X_test, y_train, y_test = split_data(data)
+    acc = run_classifier(X_train, X_test, y_train, y_test)
+    st.write("Accuracy: ", acc)
 
-if lower_bound:
-lower_bound = float(lower_bound)
-upper_bound = float(upper_bound)
-ax.fill_between(x, 0, y, where=(x >= lower_bound) & (x <= upper_bound), 
-color='gray', alpha=0.5)
+if data is not None:
+    st.dataframe(data)
 
-st.pyplot(fig)
