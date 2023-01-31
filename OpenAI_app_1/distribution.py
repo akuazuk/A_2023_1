@@ -17,7 +17,7 @@ ax.plot(x, y)
 
 st.pyplot()
 
-prob_slider = st.slider("Probability", 0, 1.0, 0.5)
+prob_slider = st.slider("Probability", 0, 1, 0.5)
 
 prob = prob_slider
 lower_bound, upper_bound = beta.ppf([prob, 1 - prob], alpha, beta)
