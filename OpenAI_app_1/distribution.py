@@ -12,23 +12,16 @@ beta_dist = stt.beta(alpha, beta)
 
 x = np.linspace(beta_dist.ppf(0.01), beta_dist.ppf(0.99), 100)
 
-st.write("### Beta PDF")
 st.write("### Alpha =", alpha)
 st.write("### Beta =", beta)
 
-plt.plot(x, beta_dist.pdf(x), 'k-', lw=2, color='red', label='frozen pdf')
+plt.plot(x, beta_dist.pdf(x), 'k', lw=2, color='red', label='pdf')
 
-st.write("### Beta CDF")
-st.write("### Alpha =", alpha)
-st.write("### Beta =", beta)
 
-plt.plot(x, beta_dist.cdf(x), 'k--', lw=2, color='green', label='frozen cdf')
+plt.plot(x, beta_dist.cdf(x), 'k', lw=2, color='lightgreen', label='cdf')
 
-st.write("### Beta SF (Survival Function)")
-st.write("### Alpha =", alpha)
-st.write("### Beta =", beta)
 
-plt.plot(x, beta_dist.sf(x), 'k:', lw=2, color='blue', label='frozen sf')
+plt.plot(x, beta_dist.sf(x), 'k:', lw=2, color='darkblue', label='sf')
 
 plt.legend()
 st.pyplot()
