@@ -5,7 +5,7 @@ from scipy.stats import beta
 
 st.title("Beta Distribution Probability Density Function Visualization")
 
-alpha, beta = st.slider("alpha", 0.1, 10.0, 1.0), st.slider("beta", 0.1, 10.0, 1.0)
+alpha, beta = st.slider("alpha", 1, 10, 1), st.slider("beta", 1, 10, 1)
 
 dist = beta(alpha, beta)
 
