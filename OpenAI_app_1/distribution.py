@@ -5,8 +5,8 @@ from scipy.stats import beta
 
 st.title("Beta Distribution Interactive Plot")
 
-alpha_slider = st.slider("Alpha (α) Value", 0.1, 10.0, 1.0)
-beta_slider = st.slider("Beta (β) Value", 0.1, 10.0, 1.0)
+alpha_slider = st.slider("Alpha (α) Value", 1, 10, 1)
+beta_slider = st.slider("Beta (β) Value", 1, 10, 1)
 
 alpha, beta = alpha_slider, beta_slider
 x = np.linspace(0, 1, 100)
