@@ -3,25 +3,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import beta
 
-st.title("Beta Distribution Interactive Plot")
+st.title("Beta Distribution Probability Density Function Visualization")
 
-alpha_slider = st.slider("Alpha (α) Value", 1, 10, 1)
-beta_slider = st.slider("Beta (β) Value", 1, 10, 1)
+alpha, beta = st.slider("alpha", 0.1, 10.0, 1.0), st.slider("beta", 0.1, 10.0, 1.0)
 
-alpha, beta = alpha_slider, beta_slider
+dist = beta(alpha, beta)
+
 x = np.linspace(0, 1, 100)
-y = beta.pdf(x, alpha, beta)
+y = dist.pdf(x)
 
-fig, ax = plt.subplots()
-ax.plot(x, y)
+st.write("The probability density function of the Beta distribution with alpha =", alpha, "and beta =", beta, "is:")
+
+plt.plot(x, y)
+plt.fill_between(x, y, 0, alpha=0.2)
+plt.title("Beta Distribution PDF")
+plt.xlabel("x")
+plt.ylabel("pdf(x)")
 
 st.pyplot()
 
-prob_slider = st.slider("Probability", 0, 1, 0.5)
-
-prob = prob_slider
-lower_bound, upper_bound = beta.ppf([prob, 1 - prob], alpha, beta)
-
-st.markdown(f"Range of probabilities with {100 * prob:.0f}% confidence:")
-st.markdown(f"Lower bound: {lower_bound:.2f}")
-st.markdown(f"Upper bound: {upper_bound:.2f}")
