@@ -1,31 +1,39 @@
 import streamlit as st
-import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import beta, norm
+import numpy as np
 
-st.set_page_config(page_title="Beta & Normal Distribution Plot", 
-page_icon=":chart_with_upwards_trend:", layout="wide")
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
-st.header("Beta & Normal Distribution Plot")
+def plot_distribution(distribution_type, a, b):
+    if distribution_type == 'Normal':
+        mu = 0
+        sigma = 1
+        s = np.random.normal(mu, sigma, 1000)
+        count, bins, ignored = plt.hist(s, 30, density=True)
+        plt.plot(bins, 1/(sigma * np.sqrt(2 * np.pi)) * np.exp( - (bins - 
+mu)**2 / (2 * sigma**2) ), linewidth=2, color='r')
+        plt.title('Normal Distribution')
+        plt.xlabel('X')
+        plt.ylabel('Probability')
+    else:
+        x = np.linspace(0, 1, 1000)
+        beta = np.random.beta(a, b, 1000)
+        count, bins, ignored = plt.hist(beta, 30, density=True)
+        y = (x**(a-1)) * ((1-x)**(b-1)) / (b ** (a+b-1) / ((a-1)*(b-1)))
+        plt.plot(x, y, linewidth=2, color='r')
+        plt.title('Beta Distribution')
+        plt.xlabel('X')
+        plt.ylabel('Probability')
+    return plt
 
-# Create the sliders for Beta distribution
-alpha_slider = st.slider("Alpha (Shape 1)", 0.1, 10.0, 1.0, 0.1)
-beta_slider = st.slider("Beta (Shape 2)", 0.1, 10.0, 1.0, 0.1)
+distribution_type = st.sidebar.selectbox("Select Distribution Type", 
+["Normal", "Beta"])
 
-# Plot the Beta distribution
-x = np.linspace(0, 1, 100)
-y = beta.pdf(x, alpha_slider, beta_slider)
-plt.plot(x, y)
+if distribution_type == 'Beta':
+    a = st.sidebar.slider("a", 0, 10, 1)
+    b = st.sidebar.slider("b", 0, 10, 1)
 
-st.pyplot()
-
-# Plot the normal distribution
-mean_slider = st.slider("Mean", -5.0, 5.0, 0.0, 0.1)
-std_slider = st.slider("Standard Deviation", 0.1, 5.0, 1.0, 0.1)
-
-x = np.linspace(-5, 5, 100)
-y = norm.pdf(x, mean_slider, std_slider)
-plt.plot(x, y)
-
-st.pyplot()
+fig, ax = plt.subplots()
+plot = plot_distribution(distribution_type, a, b)
+st.pyplot(fig)
 
