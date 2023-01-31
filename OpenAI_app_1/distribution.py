@@ -1,23 +1,27 @@
 import streamlit as st
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import beta
 
-def calculate_probability(prior_a, prior_b, likelihood_a, likelihood_b, evidence):
-    posterior_a = (prior_a * likelihood_a) / evidence
-    posterior_b = (prior_b * likelihood_b) / evidence
-    return posterior_a, posterior_b
+st.title("Beta Distribution Density Probability Plot")
 
-def main():
-    st.title("Bayes Theorem Probability Calculator")
-    st.write("Enter prior probabilities and likelihood ratios:")
-    prior_a = st.number_input("Prior probability of Hypothesis A", 0.5, min_value=0, max_value=1)
-    prior_b = st.number_input("Prior probability of Hypothesis B", 0.5, min_value=0, max_value=1)
-    likelihood_a = st.number_input("Likelihood ratio of Hypothesis A", 1, min_value=0)
-    likelihood_b = st.number_input("Likelihood ratio of Hypothesis B", 1, min_value=0)
-    evidence = prior_a * likelihood_a + prior_b * likelihood_b
-    posterior_a, posterior_b = calculate_probability(prior_a, prior_b, likelihood_a, likelihood_b, evidence)
-    st.write("Posterior probabilities:")
-    st.write("Posterior probability of Hypothesis A: ", posterior_a)
-    st.write("Posterior probability of Hypothesis B: ", posterior_b)
+a, b = st.slider("Shape parameters", 0.1, 5.0, (1.0, 3.0)), st.slider("Shape parameters", 0.1, 5.0, (1.0, 3.0))
 
-if __name__ == '__main__':
-    main()
+x = np.linspace(0, 1, 100)
+y = beta.pdf(x, a, b)
+
+plt.plot(x, y, label='beta pdf')
+
+st.plotly_chart(plt)
+
+prob_range_start, prob_range_end = st.slider("Probability Range", 0.0, 1.0, (0.0, 1.0))
+
+prob_range = np.linspace(prob_range_start, prob_range_end, 100)
+prob_area = beta.cdf(prob_range_end, a, b) - beta.cdf(prob_range_start, a, b)
+
+st.write(f"The probability of the range [{prob_range_start}, {prob_range_end}] is: {prob_area:.3f}")
+
+plt.fill_between(prob_range, 0, beta.pdf(prob_range, a, b), alpha=0.5)
+
+st.plotly_chart(plt)
 
