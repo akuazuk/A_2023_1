@@ -1,37 +1,31 @@
+import streamlit as st
 import numpy as np
 import scipy.stats as stats
-import streamlit as st
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_background_color='black')
+st.set_page_color(background_color='black')
 
-# Define beta distribution
-a = st.slider("a", 0.1, 10.0, 1.0)
-b = st.slider("b", 0.1, 10.0, 1.0)
+st.title("Beta Distribution")
 
-x = np.linspace(0, 1, 100)
-y = stats.beta.pdf(x, a, b)
+a = st.slider("a", 0.01, 10.0)
+b = st.slider("b", 0.01, 10.0)
 
-# Plot the beta distribution
-fig, ax = plt.subplots(figsize=(10, 5), facecolor='black')
-ax.plot(x, y, 'red', lw=2)
-ax.set_facecolor('black')
+x = np.linspace(stats.beta.ppf(0.01, a, b), stats.beta.ppf(0.99, a, b), 
+100)
+
+fig, ax = plt.subplots()
+ax.plot(x, stats.beta.pdf(x, a, b), 'k-', lw=5, alpha=0.6, label='beta 
+pdf')
 st.pyplot(fig)
 
-# Show shaded area under the curve
-start, end = st.slider("Probability range", 0, 1, (0.1, 0.9))
+prob = st.slider("prob", 0.0, 1.0)
 
-# Calculate the area under the curve in the given range
-x_range = np.linspace(start, end, 100)
-y_range = stats.beta.pdf(x_range, a, b)
-area = np.trapz(y_range, x_range)
+x = np.linspace(stats.beta.ppf(0.01, a, b), stats.beta.ppf(prob, a, b), 
+100)
 
-# Plot the shaded area
-fig, ax = plt.subplots(figsize=(10, 5), facecolor='black')
-ax.fill_between(x_range, y_range, 0, color='red', alpha=0.5)
-ax.plot(x, y, 'red', lw=2)
-ax.set_facecolor('black')
-ax.annotate(f"P({start:.2f} < X < {end:.2f}) = {area:.2f}", (start + end) 
-/ 2, 0.05, color='red', fontsize=14)
+fig, ax = plt.subplots()
+ax.fill_between(x, stats.beta.pdf(x, a, b), 0, color='#5fba7d', alpha=0.5)
+ax.plot(x, stats.beta.pdf(x, a, b), 'k-', lw=5, alpha=0.6, label='beta 
+pdf')
 st.pyplot(fig)
 
