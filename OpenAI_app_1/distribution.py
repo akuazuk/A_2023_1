@@ -1,42 +1,26 @@
+import random
 import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.tree import DecisionTreeClassifier
 
-@st.cache
-def load_data(file_path):
-    data = pd.read_csv(file_path)
-    return data
+st.title("Two Dice Rolling Simulator")
 
-def main():
-    st.title("Machine Learning Model - Kyphosis Detection")
-    st.sidebar.title("Kyphosis Detection")
+def simulate_rolls(num_rolls):
+    num_sixes = 0
+    for i in range(num_rolls):
+        dice1 = random.randint(1, 6)
+        dice2 = random.randint(1, 6)
+        if dice1 == 6 and dice2 == 6:
+            num_sixes += 1
+    return num_sixes
 
-    file_path = st.sidebar.file_uploader("Upload Kyphosis Data (CSV file)", type=["csv"])
-    if file_path is not None:
-        data = load_data(file_path)
-        st.dataframe(data.head())
-        st.write("Number of rows and columns:", data.shape)
+# Initialize the number of rolls and runs
+num_rolls = st.slider("Number of rolls per simulation", min_value=1, max_value=1000, value=100, step=1)
+num_runs = st.slider("Number of simulations", min_value=1, max_value=1000, value=100, step=1)
 
-        X = data.drop("Kyphosis", axis=1)
-        y = data["Kyphosis"]
-
-        st.sidebar.subheader("Model Selection")
-        algorithm = st.sidebar.selectbox("Select Algorithm", ["Decision Tree"])
-
-        if algorithm == "Decision Tree":
-            clf = DecisionTreeClassifier()
-            clf.fit(X, y)
-            accuracy = clf.score(X, y)
-            st.write("Accuracy: ", accuracy)
-
-        st.subheader("Visualizing Data")
-        if st.checkbox("Show Scatter Plot with Class labels"):
-            plt.scatter(X["Age"], X["Number"], color='red', cmap="viridis")
-            plt.xlabel("Age")
-            plt.ylabel("Number")
-            st.pyplot()
-
-if __name__ == '__main__':
-    main()
+if st.button("Roll Dice"):
+    result = simulate_rolls(num_rolls)
+    total_sixes = 0
+    for i in range(num_runs):
+        total_sixes += simulate_rolls(num_rolls)
+    st.write("After", num_rolls * num_runs, "rolls, the average number of sixes is:", total_sixes/num_runs)
+    st.write("The a posteriori probability of getting two sixes is:", total_sixes/(num_rolls * num_runs))
 
