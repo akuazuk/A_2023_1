@@ -7,8 +7,8 @@ st.title("Normal and Beta Distribution Plotting App")
 
 mu = st.sidebar.slider("Mean", -10, 10, 0)
 sigma = st.sidebar.slider("Standard Deviation", 0.1, 10.0, 1.0)
-a = st.sidebar.slider("a (Beta Distribution)", 1, 100.0, 1.0)
-b = st.sidebar.slider("b (Beta Distribution)", 1, 100.0, 1.0)
+a = st.sidebar.slider("a (Beta Distribution)", 0.1, 10.0, 1.0)
+b = st.sidebar.slider("b (Beta Distribution)", 0.1, 10.0, 1.0)
 prob = st.sidebar.slider("Probability (for Beta Distribution)", 0.0, 1.0, 
 0.5, step=0.01)
 
