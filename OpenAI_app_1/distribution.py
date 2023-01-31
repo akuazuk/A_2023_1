@@ -32,7 +32,7 @@ def main():
 
         st.subheader("Visualizing Data")
         if st.checkbox("Show Scatter Plot with Class labels"):
-            plt.scatter(X["Age"], X["Number"], c=y, cmap="viridis")
+            plt.scatter(X["Age"], X["Number"], color='red, cmap="viridis")
             plt.xlabel("Age")
             plt.ylabel("Number")
             st.pyplot()
