@@ -1,28 +1,14 @@
-import matplotlib.pyplot as plt
 import streamlit as st
 import numpy as np
-import scipy.stats as stt
+from scipy.stats import beta
 
-st.title("Beta Distribution Plotter")
+def plot_beta_pdf(a, b, x, y_min, y_max):
+x_grid = np.linspace(x.min(), x.max(), 250)
+pdf = beta.pdf(x_grid, a, b)
+return st.area_chart(pdf, x_grid, y_min=y_min, y_max=y_max)
 
-alpha = st.slider("Alpha", 1, 50, 25, 1)
-beta = st.slider("Beta", 1, 50, 25, 1)
+a = st.slider("a", 0.1, 10.0, 2.0, step=0.1)
+b = st.slider("b", 0.1, 10.0, 2.0, step=0.1)
+x = np.linspace(0, 1, 100)
 
-beta_dist = stt.beta(alpha, beta)
-
-x = np.linspace(beta_dist.ppf(0), beta_dist.ppf(1), 100)
-
-#st.write("### Alpha =", alpha)
-#st.write("### Beta =", beta)
-
-plt.plot(x, beta_dist.pdf(x), 'k', lw=2, color='orange', label='pdf')
-
-
-plt.plot(x, beta_dist.cdf(x), 'k', lw=2, color='lightgreen', label='cdf')
-
-
-plt.plot(x, beta_dist.sf(x), 'k', lw=2, color='darkblue', label='sf')
-
-plt.legend()
-st.pyplot()
-
+plot_beta_pdf(a, b, x, 0, 5)
